@@ -27,7 +27,7 @@ public interface TelevisoreService {
 
 	public int quantiProdottiInUnIntervalloDiDate(LocalDate before, LocalDate after)throws Exception;
 	
-	public String[] MarcheDiTelevisoriUltimiSeiM()throws Exception;
+	public String[] marcheDiTelevisoriUltimiSeiM()throws Exception;
 	
 	//##########################################################################################
 	//DA FARE PER ESERCIZIO: OVVIAMENTE BISOGNA RICREARE LA CONTROPARTE IN UserDAO e UserDAOImpl

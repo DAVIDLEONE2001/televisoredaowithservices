@@ -157,9 +157,21 @@ public class TelevisoreServiceImpl implements TelevisoreService {
 	}
 
 	@Override
-	public String[] MarcheDiTelevisoriUltimiSeiM() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public String[] marcheDiTelevisoriUltimiSeiM() throws Exception {
+		String[] result;
+		try (Connection connection = MyConnection.getConnection(Constants.DRIVER_NAME, Constants.CONNECTION_URL)) {
+
+			// inietto la connection nel dao
+			televisoreDao.setConnection(connection);
+
+			// eseguo quello che realmente devo fare
+			result = televisoreDao.MarcheDiTelevisoriUltimiSeiM();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		return result;
 	}
 
 }

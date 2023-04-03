@@ -1,6 +1,7 @@
 package it.prova.dao.televisore;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -228,13 +229,19 @@ public class TelevisoreDAOImpl extends AbstractMySQLDAO implements TelevisoreDAO
 
 		if (before == null || after == null)
 			throw new Exception("Valore di input non ammesso.");
-
 		int result = 0;
-		try (PreparedStatement ps = connection.prepareStatement(
-				"select count(*) as count from televisore where dataproduzione between ? and ?; ")) {
+
+		try (PreparedStatement ps = connection
+				.prepareStatement("select count(*) as count from televisore where dataproduzione between ? and ?;")) {
 			ps.setDate(1, java.sql.Date.valueOf(before));
 			ps.setDate(2, java.sql.Date.valueOf(after));
-			result = ps.executeUpdate();
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+
+				result = rs.getInt("count");
+
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -243,9 +250,32 @@ public class TelevisoreDAOImpl extends AbstractMySQLDAO implements TelevisoreDAO
 	}
 
 	@Override
-	public String[] MarcheDiTelevisoriUltimiSeiM() {
-		// TODO Auto-generated method stub
-		return null;
+	public String[] MarcheDiTelevisoriUltimiSeiM() throws Exception {
+
+		if (isNotActive())
+			throw new Exception("Connessione non attiva. Impossibile effettuare operazioni DAO.");
+
+		List<String> marche = new ArrayList<>();
+
+		try (PreparedStatement ps = connection.prepareStatement("select * from televisore where dataproduzione>?")) {
+
+			ps.setDate(1, Date.valueOf(LocalDate.now().minusMonths(6)));
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+
+					marche.add(rs.getString("marca"));
+				}
+			} // niente catch qui
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		String[] result = new String[marche.size()];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = marche.get(i);
+		}
+		return result;
 	}
 
 }
